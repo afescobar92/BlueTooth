@@ -12,18 +12,24 @@
         android:id="@+id/btnOn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
+        android:onClick="on"
         android:text="ON" />
 
     <Button
         android:id="@+id/btnOff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
+        android:onClick="off"
         android:text="OFF" />
 
     <Button
         android:id="@+id/btnSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
+        android:onClick="search"
         android:text="Search" />
 
     <ListView
