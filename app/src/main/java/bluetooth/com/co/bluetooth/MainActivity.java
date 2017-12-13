@@ -3,8 +3,12 @@ package bluetooth.com.co.bluetooth;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
@@ -36,6 +40,18 @@ public class MainActivity extends AppCompatActivity {
     private final static int REQUEST_ENABLE_BT = 1;
     private final static int MESSAGE_READ = 2;
     private final static int CONNECTION_STATUS = 3;
+
+    private final BroadcastReceiver btReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(BluetoothDevice.ACTION_FOUND.equals(action)){
+               BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+               arrayAdapter.add(bluetoothDevice.getName()+"\n"+bluetoothDevice.getAddress());
+               arrayAdapter.notifyDataSetChanged();
+            }
+        }
+    };
 
 
     @Override
@@ -100,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void validateBlueToothDevice(){
         if(bluetoothAdapter == null){
-            Toast.makeText(this, "Bluetooth device not supported", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.bluetoothUnsupported, Toast.LENGTH_LONG).show();
         }else{
             btnOn.setEnabled(true);
             btnOff.setEnabled(true);
@@ -112,17 +128,28 @@ public class MainActivity extends AppCompatActivity {
         if(!bluetoothAdapter.isEnabled()){
             Intent enabledBlueToothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enabledBlueToothIntent,REQUEST_ENABLE_BT);
-            Toast.makeText(this, "BlueTooth activated", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.bluetoothEnabled, Toast.LENGTH_LONG).show();
         }else{
-            Toast.makeText(this, "BlueTooth already activate", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.bluetoothAlreadyActivate, Toast.LENGTH_LONG).show();
         }
     }
 
     public void off(View view) {
-
+       bluetoothAdapter.disable();
+        Toast.makeText(this, R.string.bluetoothDisable, Toast.LENGTH_LONG).show();
+        if(arrayAdapter != null){
+            arrayAdapter.clear();
+        }
     }
 
     public void search(View view) {
-
+        if(bluetoothAdapter.isEnabled()){
+            arrayAdapter.clear();
+            Toast.makeText(this, R.string.searchDevice, Toast.LENGTH_SHORT).show();
+            registerReceiver(btReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
+            bluetoothAdapter.startDiscovery();
+        }else{
+            Toast.makeText(this, R.string.bluetoothDisable, Toast.LENGTH_SHORT).show();
+        }
     }
 }

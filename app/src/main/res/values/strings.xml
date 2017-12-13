@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">BlueTooth</string>
+    <string name="bluetoothEnabled">BlueTooth activated</string>
+    <string name="bluetoothDisable">BlueTooth disable</string>
+    <string name="bluetoothAlreadyActivate">BlueTooth already activate</string>
+    <string name="bluetoothUnsupported">Bluetooth device not supported</string>
+    <string name="searchDevice">searching...</string>
 </resources>
